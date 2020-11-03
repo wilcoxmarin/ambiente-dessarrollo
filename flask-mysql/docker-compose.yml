@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+    container_name: app
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 5000:5000
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+      COMPOSER_MEMORY_LIMIT: -1
+    working_dir: /app
+    volumes:
+      - ./:/app
+    links:
+      - db
+    networks:
+      service_network:
+
+  #MySQL Service
+  db:
+    image: mysql:5.7
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: example
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - vol_mysql:/var/lib/mysql/
+
+volumes:
+  vol_mysql:
